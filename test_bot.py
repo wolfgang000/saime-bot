@@ -33,8 +33,12 @@ class SaimeBotTests(unittest.TestCase):
 			</table>
 		"""
 		table_node = html.fromstring(table_str)
-		print(table_node)
-		self.assertTrue(get_table_row(table_node)
+		row = get_table_row(table_node)
+		self.assertTrue(row[0],'123456')
+		self.assertTrue(row[1],'Pancho Villa')
+		self.assertTrue(row[2],'M')
+		self.assertTrue(row[3],'17/12/1988')
+
 
 def main():
     unittest.main()
