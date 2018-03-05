@@ -24,31 +24,49 @@ def check_login(session_requests):
 
 
 def get_user_data(session_requests):
-    result = session_requests.get(HOME_URL, headers = dict(referer = HOME_URL))
-    tree = html.fromstring(result.content)
-    try:
-        login_form = tree.get_element_by_id('login-form')
-        return False
-    except KeyError:
-        return True
+	result = session_requests.get(HOME_URL, headers = dict(referer = HOME_URL))
+	tree = html.fromstring(result.content)
+	table_node = tree.xpath('//table')
+	row_data = get_table_row(table_node[0])
+	return {
+		'ci': row_data[0], 
+		'full_name': row_data[1],
+		'sex': row_data[2],
+		'birth_date': row_data[3]
+	}
 
 def get_table_row(table_node):
-    return None
+	rows = table_node.xpath("tr")
+	first_row = rows[1]
+	data_row = first_row.xpath("td/text()")
+	return data_row
 
 
 
 def main():
-    session_requests = requests.session()
+	session_requests = requests.session()
 
-    payload = {
-        "LoginForm[username]": USERNAME, 
-        "LoginForm[password]": PASSWORD, 
-        "g-recaptcha-response": RECAPTCHA_TOKEN
-    }
+	payload = {
+		"LoginForm[username]": USERNAME, 
+		"LoginForm[password]": PASSWORD, 
+		"g-recaptcha-response": RECAPTCHA_TOKEN
+	}
 
-    # Perform login
-    result = session_requests.post(LOGIN_URL, data = payload, headers = dict(referer = LOGIN_URL))
-    print("login",check_login(session_requests))
+	print("Perform logged in...")
+	result = session_requests.post(LOGIN_URL, data = payload, headers = dict(referer = LOGIN_URL))
+
+	print("Checking logged in...")
+	login_success = check_login(session_requests)
+	if login_success:
+		print("You have been successfully logged in!")
+
+		print("Pulling user data...")
+		user_data = get_user_data(session_requests)
+		print(user_data)
+
+
+	else:
+		print("Logged in failed :( ")
 
     
 
