@@ -26,7 +26,6 @@ def check_login(session_requests):
 def get_user_data(session_requests):
     result = session_requests.get(HOME_URL, headers = dict(referer = HOME_URL))
     tree = html.fromstring(result.content)
-    lxml.
     try:
         login_form = tree.get_element_by_id('login-form')
         return False
