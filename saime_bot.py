@@ -55,6 +55,8 @@ class UserApi():
 	BASE_URL = "https://tramites.saime.gob.ve/"
 	LOGIN_URL = "https://tramites.saime.gob.ve/index.php?r=site/login"
 	HOME_URL = "https://tramites.saime.gob.ve/index.php?r=tramite/tramite/"
+	PAYMENT_URL = "https://tramites.saime.gob.ve/index.php?r=pago/pago/formpago"
+	EXPRESS_URL = "https://tramites.saime.gob.ve/index.php?r=inicio/inicio/agilizacion"
 
 	def __init__(self, username, password):
 		self.session_requests = requests.session()
@@ -99,12 +101,38 @@ class UserApi():
 			'birth_date': row_data[3]
 		}
 	
+	def get_payment_form(self):
+		print("start payment")
+		response = self.session_requests.get(self.EXPRESS_URL, headers = dict(referer = self.EXPRESS_URL))
+		tree = html.fromstring(response.content)
+		form_node = tree.get_element_by_id("pago-form")
+		payload = self.__get_payload_from_form(form_node)
+		response = self.session_requests.post(
+			self.PAYMENT_URL, 
+			data = payload, 
+			headers = dict(referer = self.PAYMENT_URL)
+		)
+		print("status:",response.status_code)
+		print("headers:",response.headers)
+		print("content:",response.content)
+		
+
+
+
+	
 	def __get_table_row(self, table_node):
 		rows = table_node.xpath("tr")
 		first_row = rows[1]
 		data_row = first_row.xpath("td/text()")
 		return data_row
 
+	def __get_payload_from_form(self, form_node):
+		input_nodes = form_node.xpath("input")
+		payload = {}
+		for input_node in input_nodes:
+			payload[input_node.name] = input_node.value
+		return payload
+	
 
 
 def main():
@@ -122,6 +150,7 @@ def main():
 		print("Pulling user data...")
 		user_data = bot.get_user_data()
 		print(user_data)
+		bot.get_payment_form()
 
 
 	else:
