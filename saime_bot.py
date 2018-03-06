@@ -11,6 +11,8 @@ RECAPTCHA_TOKEN = ""
 
 LOGIN_URL = "https://tramites.saime.gob.ve/index.php?r=site/login"
 HOME_URL = "https://tramites.saime.gob.ve/index.php?r=tramite/tramite/"
+PAYMENT_URL = "https://tramites.saime.gob.ve/index.php?r=pago/pago/formpago"
+EXPRESS_URL = "https://tramites.saime.gob.ve/index.php?r=inicio/inicio/agilizacion"
 
 
 def check_login(session_requests):
@@ -41,6 +43,12 @@ def get_table_row(table_node):
 	data_row = first_row.xpath("td/text()")
 	return data_row
 
+def get_payload_from_form(form_node):
+	input_nodes = form_node.xpath("input")
+	payload = {}
+	for input_node in input_nodes:
+		payload[input_node.name] = input_node.value
+	return payload
 
 
 def main():

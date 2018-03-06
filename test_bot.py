@@ -1,5 +1,10 @@
 import unittest
+import os
 from lxml import html
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
 
 class SaimeBotTests(unittest.TestCase):
 	def test_row_data_from_table_node(self):
@@ -38,6 +43,18 @@ class SaimeBotTests(unittest.TestCase):
 		self.assertEqual(row[1],'Pancho Villa')
 		self.assertEqual(row[2],'M')
 		self.assertEqual(row[3],'17/12/1988')
+
+	def test_payload_from_form(self):
+		from saime_bot import get_payload_from_form
+		file_path = os.path.join(BASE_DIR, 'tests/data/express.html')
+		with open(file_path, 'r') as myfile:
+			express_html = myfile.read()
+
+		form_node = html.fromstring(express_html).get_element_by_id("pago-form")
+		payload = get_payload_from_form(form_node)
+		self.assertEqual(len(payload), 5)
+
+
 
 def main():
     unittest.main()
