@@ -51,7 +51,7 @@ def get_payload_from_form(form_node):
 	return payload
 
 
-class Bot():
+class UserApi():
 	BASE_URL = "https://tramites.saime.gob.ve/"
 	LOGIN_URL = "https://tramites.saime.gob.ve/index.php?r=site/login"
 	HOME_URL = "https://tramites.saime.gob.ve/index.php?r=tramite/tramite/"
@@ -108,7 +108,7 @@ class Bot():
 
 
 def main():
-	bot = Bot(username=USERNAME, password=PASSWORD)
+	bot = UserApi(username=USERNAME, password=PASSWORD)
 	
 
 	print("Perform logged in...")
