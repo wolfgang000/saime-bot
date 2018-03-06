@@ -59,8 +59,7 @@ class UserApi():
 		response = self.session_requests.get(self.HOME_URL, headers = dict(referer = self.HOME_URL))
 		if response.status_code == 502:
 			raise self.SiteIsDown()
-		print(response.content)
-		return not self._is_login_page(response.content)
+		return not self._is_login_page(response.content.decode('utf_8'))
 
 
 	def get_user_data(self):
@@ -94,7 +93,7 @@ class UserApi():
 		if response.status_code == 502:
 			raise self.SiteIsDown()
 		else:
-			return self._is_payment_form_enable(response.content)
+			return self._is_payment_form_enable(response.content.decode('utf_8'))
 
 	def _is_payment_form_enable(self, site_text):
 		error_msg = "Estimado ciudadano, le invitamos a acceder a la solicitud de prórroga de pasaporte en Venezuela,"
@@ -144,9 +143,6 @@ def main():
 	if login_success:
 		print("You have been successfully logged in!")
 
-		print("Pulling user data...")
-		user_data = bot.get_user_data()
-		print(user_data)
 		if bot.is_express_passport_payment_enable():
 			send_notification("Tramite express habilitado CORRE!")
 
