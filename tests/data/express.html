@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" type="text/css" href="/assets/fa4b47c8/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/assets/fa4b47c8/css/bootstrap-yii.css" />
+<link rel="stylesheet" type="text/css" href="/assets/fa4b47c8/css/jquery-ui-bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="/themes/saime/css/bootstrap_portal.css" />
+<link rel="stylesheet" type="text/css" href="/themes/saime/css/font-awesome.css" />
+<link rel="stylesheet" type="text/css" href="/themes/saime/css/estructura_internas.css" />
+<link rel="stylesheet" type="text/css" href="/themes/saime/css/style.css" />
+<link rel="stylesheet" type="text/css" href="/themes/saime/css/sub-menu.css" />
+<link rel="stylesheet" type="text/css" href="/themes/saime/css/custom.css" />
+<script type="text/javascript" src="/assets/e5116c7f/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/e5116c7f/jui/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/assets/fa4b47c8/js/jqui-tb-noconflict.js"></script>
+<script type="text/javascript" src="/assets/fa4b47c8/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/fa4b47c8/bootbox/bootbox.min.js"></script>
+<script type="text/javascript" src="/assets/fa4b47c8/notify/notify.min.js"></script>
+<script type="text/javascript" src="/themes/saime/js/jquery.min.js"></script>
+<script type="text/javascript" src="/themes/saime/js/jquery.ui.js"></script>
+<script type="text/javascript" src="/themes/saime/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/themes/saime/js/wow.js"></script>
+<script type="text/javascript" src="/themes/saime/js/jscroller2-1.61.js"></script>
+<script type="text/javascript" src="/themes/saime/js/jquery.crotator.js"></script>
+<script type="text/javascript" src="/themes/saime/js/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="/themes/saime/js/jquery.jscrollpane.min.js"></script>
+<script type="text/javascript" src="/themes/saime/js/jquery.bpopup.min.js"></script>
+<title>SAIME - Pasaporte</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="description" content="PASAPORTE"/>
+        <meta name="author" content="SAIME"/>
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+        <link rel="shortcut icon" href="/themes/saime/imagenes/favicon.ico" />
+        <link rel="apple-touch-icon" href="/themes/saime/imagenes/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="/themes/saime/imagenes/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="/themes/saime/imagenes/apple-touch-icon-114x114.png" />
+        <!--<script type="text/javascript" src="https://js.authorize.net/v1/Accept.js" charset="utf-8"></script>-->
+        
+                                                                                                <!--//     ***** JavasCript *****-->
+                                                                                                                          <!--Interviene con el Popup  -->
+        <!--Movimiento del Popup -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-39555876-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-39555876-4');
+</script>
+
+<!--<script src='https://www.google.com/recaptcha/api.js'></script>-->
+
+    </head>
+    <body>
+        <div id="loader">
+    <div class="loader-container">
+        <h3 class="loader-back-text"><img src="/themes/saime/imagenes/loader.gif" alt="" class="loader"></h3>
+    </div>
+</div>        <div id="body">
+        
+                                    <!--Encabezado de la plantilla-->
+            <!--Buscador-->
+
+            <!--Imagen encabezado-->
+            <div class="topbar">		
+                <div class="container">
+                    <div class="pull-left">
+                        <img  class="img-responsive" src="/themes/saime/imagenes/gobierno.png" width="auto" height="100%">
+                    </div>
+                </div>
+            </div>
+            <!--MENU-->
+            <div id="">
+                                    <nav id="menu-wrap2">
+    <header class="header">
+        <nav class="navbar navbar-default">
+            <nav class="navbar navbar-default navbar-static-top">
+                <div class="container2">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main_nav"> <span class="bars">
+                                <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </span> <span class="btn-text">Menu</span>
+                        </button>
+                    </div>
+                    <div class="collapse navbar-collapse" id="main_nav">
+                        <ul class="nav navbar-nav nav-main" id="yw0">
+<li><span><img src="themes/saime/imagenes/enlaces/mpprijp.png" width="80" /></span></li>
+<li class="dropdown menu_inicio"><a href="/index.php?r=site/index">Inicio</a></li>
+<li class="dropdown menu_pasaporte"><a href="#">Pasaporte</a>
+<ul class="dropdown-menu">
+<li><a href="/index.php?r=tramite/tramite">Estado de Trámites</a></li>
+<li><a href="/index.php?r=inicio/inicio/prorrogaAnulacion">Anulación de Prórroga de Pasaporte Electrónico</a></li>
+<li data-toggle="dropdown dropdown-submenu" class="dropdown dropdown-submenu"><a href="#">En el Extranjero</a>
+<ul class="dropdown-menu">
+<li><a href="/index.php?r=consular/consular">Solicitud de Pasaporte</a></li>
+<li><a href="/index.php?r=inicio/inicio/prorrogaconsular">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obtención de Prórroga de Pasaporte Electrónico</a></li>
+</ul>
+</li>
+<li><a href="#">--------------------------</a></li>
+<li data-toggle="dropdown dropdown-submenu" class="dropdown dropdown-submenu"><a href="#">En Venezuela</a>
+<ul class="dropdown-menu">
+<li><a href="/index.php?r=inicio/inicio">Solicitud de Pasaporte</a></li>
+<li class="active"><a href="/index.php?r=inicio/inicio/agilizacion">Obtención Express de Pasaporte Electrónico</a></li>
+<li><a href="/index.php?r=inicio/inicio/prorroga">Obtención de Prórroga de Pasaporte Electrónico</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="dropdown menu_certificacion"><a href="#">Certificación</a>
+<ul class="dropdown-menu">
+<li><a href="/index.php?r=certificacion/certificacion">Solicitud de Certificación de datos</a></li>
+<li><a href="/index.php?r=certificacionp/certificacionp">Solicitud de Certificación de Pasaporte</a></li>
+<li><a href="/index.php?r=migracion/migracion">Solicitud de Certificación de Movimientos Migratorios</a></li>
+</ul>
+</li>
+<li class="dropdown"><a href="#">Usuario</a>
+<ul class="dropdown-menu">
+<li><a href="/index.php?r=usuario/usuario/modificarClave">Modificar Usuario</a></li>
+<li data-toggle="dropdown dropdown-submenu" class="dropdown dropdown-submenu"><a href="#">Preguntas</a>
+<ul class="dropdown-menu">
+<li><a href="/index.php?r=pregunta/pregunta">Preguntas de Seguridad</a></li>
+<li><a href="/index.php?r=pregunta/pregunta/rememberPregunta">¿Olvidó sus Preguntas?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/index.php?r=site/logout">Salir</a></li>
+<li><span><img src="/themes/saime/imagenes/logo_saime.png"  /></span></li>
+</ul>                    </div>
+                </div>
+            </nav>
+        </nav>
+    </header>
+</nav>
+                                                <!--Cuerpo-->
+                <style>
+    .mensajes {
+        background-color: #d9edf7;
+        border-color: #bce8f1;
+        color: #31708f;
+        text-align: center
+
+    }    
+
+</style>
+
+
+<div id="est_variable">
+    <div id="envuelto">
+        <section id="page-header" class="section background customheader">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+<!--                <h3>Solicitud de Pasaporte en Venezuela</h3>-->
+            <h3>Pagar Obtención Express de Pasaporte Electrónico</h3>
+            </div>
+        </div><!-- end row -->
+    </div><!-- end container -->
+</section><!-- end section -->
+<section class="customblogsection section section-grey makenopaddingtop">
+    <div class="container">
+        <div id="post-wrapper" class="row">
+            <div id="content" class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                <div id="grid" class="row">
+                    <div class="box col-md-12 col-sm-12 clearfix">
+                        <div class="box-desc">
+                            <div class="blog-meta center-block">
+                             <div style="text-align: center;margin-bottom: 2px;margin-top:5px; "><br>
+                                
+
+                            </div>                               
+                            <div id="cond-terms" style="display:block;text-align: justify;padding:40px;">
+                                <ul class="breadcrumb"><li><a href="/index.php?r=site/index">Inicio</a><span class="divider">/</span></li><li class="active">Obtención Express de Pasaporte Electrónico</li></ul>        
+                                    <p style="text-align: justify;"> 
+                                        Los siguientes enlaces le permitirán realizar la Obtención Express de Pasaporte Electrónico en el territorio nacional (Venezuela).
+                                        Usted podrá efectuar esta operación en cualquier momento del día, una vez que haya hecho el pago se le notificará 
+                                        por vía telefónica o por correo electrónico de su transacción y su pasaporte será enviado a la oficina donde tramitó su solicitud.
+
+                                    </p><br>
+                                </div>
+
+                                                                    <table class="table" cellpadding="0" cellspacing="0">
+    <tr>
+        <td width="20%" class="titulo"><h5>C&eacute;dula</h5></td>
+        <td width="30%" class="titulo"><h5>Nombre Completo</h5></td>
+        <td width="20%" class="titulo"><h5>Fecha de Nacimiento</h5></td>
+        <td width="20%" class="titulo"><h5>Opciones</h5></td>
+    </tr>
+    
+         
+               
+        <tr id="0">
+            <td class="dato">26242913</td>
+            <td class="dato">Wolfgang Aner Salazar Mora</td>
+            <td class="dato">03/05/1995</td>
+            <td class="dato">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        
+                        <!-- PARA AGILIZACION DE TRÁMITE DE PASAPORTE-->
+                        <td >
+                            
+                                                        
+                            
+                                                                                             <form style="border:none;height:16px;width:16px;margin: 0px auto 0px auto;" id="pago-form" action="?r=pago/pago/formpago" method="post">                                  
+                                    <input value="%FB%BB%85oQI%89%F4S%DBN%89%3C%0A%FE%D1%DF%00c%DC%BFD%B5%D2%AE%12X%BB%7E%0E%B3%D5" name="Pago[idserial]" id="Pago_idserial" type="hidden" />                                    <input value="%FB%BB%85oQI%89%F4S%DBN%89%3C%0A%FE%D1%DF%00c%DC%BFD%B5%D2%AE%12X%BB%7E%0E%B3%D5" name="Pago[idplanilla]" id="Pago_idplanilla" type="hidden" />                                    <input value="K%C7%9B%838d%15V" name="Pago[tipoprocesoagilizacion]" id="Pago_tipoprocesoagilizacion" type="hidden" />                                    <input value="%F4%1E%D8%FD%BD%ACK3" name="Pago[tipotramiteprocesoagilizacion]" id="Pago_tipotramiteprocesoagilizacion" type="hidden" />
+                                                               
+                                    <input title="Pagar Obtención Express de Pasaporte Electrónico" style="border:none;width:16px;height:16px;margin-left:-20px" src="/themes/saime/imagenes/pay.png" type="image" name="yt0" />                            
+                                   </form>                                                        
+                            
+                             
+                            <!--                        </td>-->
+                    </td>           
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        
+</table>
+<div id="view"></div>
+<script type="text/javascript">
+    function mostrar_seleccion(obj){
+        for( i = 0 ; i <= 0 ; i++ ){
+            if( i == obj )
+                jQuery( "#" + i ).attr( 'class' , 'selected' );
+            else
+                jQuery( "#" + i ).attr( 'class' , '' );
+        }
+    }
+</script>                                                            </div><!-- end bottom -->
+                        </div>
+                    </div>
+                </div>
+            </div><!-- end content -->
+        </div><!-- end row -->
+    </div><!-- end container -->
+</section><!-- end section -->
+
+    <script>
+
+    $('.menu_pasaporte').addClass('active');
+</script>
+    </div>
+</div>
+        
+                <!--Redes sociales-->
+                                <br></br>
+                <br></br>
+                <br></br>
+<section class="section fullscreen background parallax" style="background-image:url('/themes/saime/imagenes/parallax_02.jpg');" data-img-width="1920" data-img-height="930" data-diff="0">
+    <div class="container">
+        <div class="row contactdetails">
+            <!--
+             <div class="col-md-8 col-sm-8 col-xs-12 leftside wow fadeIn" >
+                 <h2> <img src="/themes/saime/imagenes/seadoi.png" class=""> <br>Entrega de pasaporte a domicilio <small style="color:#303030;"><br>Horario: Lunes a Viernes de 8 a.m a 4 p.m </small></h2>
+ 
+                 <a href="http://seadoi.com/seadoi3/principal/html/home.html" class="btn btn-primary  btn-lg">Continuar</a>
+ 
+             </div><!-- end col -->
+            <center>
+                <div class="col-md-12 col-sm-4 col-xs-12 wow fadeIn" >
+                    <h3><i  class="fa fa-phone-square"></i> Callcenter:</h3>
+                    <h3>(0800)-SAIME-00<br/>
+                        <span style="font-size:25px;">(0800)-72463-00</span><small class="hidden-xs" style="color:#303030;"> <br/>Lunes a Viernes de 7 a.m a 7 p.m </small></h3>
+                    <div>
+                        <style>
+                            .redess{
+                                width: 100%;
+                                padding-bottom:100px;
+                            }
+                        </style>
+                        <div class="redess block">
+                            <a target="_blank" href="https://twitter.com/RedsocialSAIME" ><i style="font-size: 2.5em;margin-left:20px;" class="fa fa-twitter-square"></i></a>
+                            <a target="_blank" href="https://www.youtube.com/watch?v=L3Muzk4Iayg&list=PLpTiR8-YvbBUksltOKFHBDovx2fo1rQzC" ><i style="font-size: 2.5em; margin-left:20px;" class="fa fa-youtube-square"></i></a>
+                            <a target="_blank" href="https://www.instagram.com/redsocialsaime/" ><i style="font-size: 2.5em; margin-left:20px;"  class="fa fa-instagram"></i></a>
+                            <a target="_blank" href="https://www.facebook.com/Red-Social-Saime-441726062515605"> <i style="font-size: 2.5em;margin-left:20px;" class="fa fa-facebook-square"></i></a>
+                            <a target="_blank" href="http://portalnuevo.lab.saime.gob.ve/site/rss "><i style="font-size: 2.5em; margin-left:20px;"  class="fa fa-rss-square"></i></a>
+                        </div>
+                    </div>
+                </div><!-- end col -->
+            </center>
+        </div><!-- end welcome -->
+    </div><!-- end container -->
+</section>
+
+
+<footer class="footer">
+    <div id="newsletter" class="container">
+        <div class="newsletterform">
+            <div class="table-responsive tabla2"> 
+                <div id="scroller_container1" style="position: relative; overflow: hidden;"> 
+                    <div style="font-size: 60px; line-height: 60px; white-space: nowrap; margin: 0px; position: absolute; top: 0px; left: -650px; height: 150px;" class="jscroller2_left jscroller2_speed-50 jscroller2_alternate jscroller2_mousemove jscroller2_dynamic">
+                        <a href="http://www.mpprij.gob.ve/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/mpprijp.png"></a>
+                        <a href="http://www.cnc.gob.ve/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/cnc.png"></a>
+                        <a href="#" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/digeservisp.png"></a>
+                        <a href="#" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/dpd.png"></a>
+                        <a href="http://www.fona.gob.ve/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/fona.png"></a>
+                        <a href="#" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/fonbe.png"></a>
+                        <a href="http://www.intt.gob.ve/intt/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/intt.png"></a>           
+                        <a href="http://www.ona.gob.ve/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/ona.png"></a>
+                        <a href="#" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/oncdoft.png"></a>
+                        <a href="http://www.ovs.gob.ve/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/ovs.png"></a>
+                        <a href="http://www.saren.gob.ve/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/saren.png"></a>
+                        <a href="http://www.snb.gob.ve/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/snb.png"></a>
+                        <a href="http://www.vgrpc.gob.ve/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/vgrpc.png"></a>
+                        <a href="http://www.pnb.gob.ve/" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/pnb.png"></a>
+                        <a href="http://www.cicpc.gob.ve" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/cicpc.png"></a>
+                        <a href="http://www.pcivil.gob.ve" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/proteccion.png"></a>
+                        <a href="http://www.consejo.gob.ve" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/consejo.png"></a>
+                        <a href="http://www.unes.edu.ve" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/unes.png"></a>
+                        <a href="http://www.venezuela.edu.ve" target="_blank"><img width="96" height="120" src="/themes/saime/imagenes/enlaces/venezuela.png"></a>
+                    </div>
+                </div>
+            </div>         
+        </div> 
+    </div>
+    <div class="container text-center"> 
+        <div class="menu">
+            <a href="/">Inicio</a>|
+            <a href="/institucion/mision">¿Qué es el SAIME?</a>|
+            <a href="/noticia">Noticias</a>|
+            <!--<a href="#">Proyectos</a>-->
+            <!--|-->
+            <!--<a href="#">Mapa del Sitio</a>
+            |
+            <a href="#">Preguntas Frecuentes</a>
+            -->
+            <a href="/oficina/fijas">Oficinas</a>|
+            <a href="/institucion/contacto">Contactanos</a>
+        </div>
+        <div class=" copymessage">
+            <span>Desarrollado por: Coordinaci&oacute;n de Sistemas - © 2016 Todos los Derechos Reservados.</span><br/>
+            <span>Servicio Administrativo de Identificación, Migración y Extranjería -Rif G-20008889-3</span><br/>
+            <span>Ministerio del Poder Popular para Relaciones Interiores, Justicia y Paz</span><br/>
+            <span>Avenida Baralt, Edificio 1000. Sede SAIME. Planta Baja, Caracas.</span><br/>
+
+        </div>
+    </div><!-- end container -->
+</footer>            </div>
+        </div>
+    <script type="text/javascript">
+/*<![CDATA[*/
+jQuery(function($) {
+jQuery('[data-toggle=popover]').popover();
+jQuery('body').tooltip({"selector":"[data-toggle=tooltip]"});
+});
+/*]]>*/
+</script>
+</body>
+</html>
+<script src="/themes/saime/js/custom.js"></script>
+
+<!--<script type="text/javascript">
+    $(window).load(function(){
+        $('#myModal2').modal('show');
+    });
+</script>
+ Modal ventana emergente
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>-->
