@@ -7,8 +7,19 @@ config.read('USER_CREDENTIAL.INI')
 
 USERNAME = config['DEFAULT']['USERNAME']
 PASSWORD = config['DEFAULT']['PASSWORD']
-RECAPTCHA_TOKEN = ""
+PUSHED_APP_KEY = config['DEFAULT']['PUSHED_APP_KEY']
+PUSHED_APP_SECRET = config['DEFAULT']['PUSHED_APP_SECRET']
 
+
+def send_notification(msg):
+	payload = {
+		"app_key": PUSHED_APP_KEY,
+		"app_secret": PUSHED_APP_SECRET,
+		"target_type": "app",
+		"content": msg
+	}
+	r = requests.post("https://api.pushed.co/1/push", data=payload)
+	print(r.text)
 
 class UserApi():
 	BASE_URL = "https://tramites.saime.gob.ve/"
@@ -43,22 +54,14 @@ class UserApi():
 		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
-		elif response.status_code == 302:
-			return True
-		else:
-			return False
 	
 	def check_login(self):
 		response = self.session_requests.get(self.HOME_URL, headers = dict(referer = self.HOME_URL))
 		if response.status_code == 502:
 			raise self.SiteIsDown()
+		print(response.content)
+		return not self._is_login_page(response.content)
 
-		tree = html.fromstring(response.content)
-		try:
-			tree.get_element_by_id('login-form')
-			return False
-		except KeyError:
-			return True	
 
 	def get_user_data(self):
 		result = self.session_requests.get(self.HOME_URL, headers = dict(referer = self.HOME_URL))
@@ -75,11 +78,11 @@ class UserApi():
 			'birth_date': row_data[3]
 		}
 	
-	def get_payment_form(self):
-		print("start payment")
+	def is_express_passport_payment_enable(self):
 		response = self.session_requests.get(self.EXPRESS_URL, headers = dict(referer = self.EXPRESS_URL))
 		if response.status_code == 502:
 			raise self.SiteIsDown()
+		
 		tree = html.fromstring(response.content)
 		form_node = tree.get_element_by_id("pago-form")
 		payload = self._get_payload_from_form(form_node)
@@ -90,10 +93,8 @@ class UserApi():
 		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
-		print("status:",response.status_code)
-		print("headers:",response.headers)
-		print("content:",response.content)
-	
+		else:
+			return self._is_payment_form_enable(response.content)
 
 	def _is_payment_form_enable(self, site_text):
 		error_msg = "Estimado ciudadano, le invitamos a acceder a la solicitud de prórroga de pasaporte en Venezuela,"
@@ -101,6 +102,13 @@ class UserApi():
 			return False
 		else:
 			return True
+
+	def _is_login_page(self, site_text):
+		error_msg = "Para ingresar debe usar el usuario y clave del portal pasaporte."
+		if error_msg in site_text:
+			return True
+		else:
+			return False
 
 
 	def _get_first_row_from_table(self, table_node):
@@ -139,8 +147,8 @@ def main():
 		print("Pulling user data...")
 		user_data = bot.get_user_data()
 		print(user_data)
-		bot.get_payment_form()
-
+		if bot.is_express_passport_payment_enable():
+			send_notification("Tramite express habilitado CORRE!")
 
 	else:
 		print("Logged in failed :( ")
