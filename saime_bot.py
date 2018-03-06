@@ -67,7 +67,7 @@ class UserApi():
 		
 		tree = html.fromstring(result.content)
 		table_node = tree.xpath('//table')
-		row_data = self.__get_first_row_from_table(table_node[0])
+		row_data = self._get_first_row_from_table(table_node[0])
 		return {
 			'ci': row_data[0], 
 			'full_name': row_data[1],
@@ -82,7 +82,7 @@ class UserApi():
 			raise self.SiteIsDown()
 		tree = html.fromstring(response.content)
 		form_node = tree.get_element_by_id("pago-form")
-		payload = self.__get_payload_from_form(form_node)
+		payload = self._get_payload_from_form(form_node)
 		response = self.session_requests.post(
 			self.PAYMENT_URL, 
 			data = payload, 
@@ -94,13 +94,22 @@ class UserApi():
 		print("headers:",response.headers)
 		print("content:",response.content)
 	
-	def __get_first_row_from_table(self, table_node):
+
+	def _is_payment_form_enable(self, site_text):
+		error_msg = "Estimado ciudadano, le invitamos a acceder a la solicitud de prórroga de pasaporte en Venezuela,"
+		if error_msg in site_text:
+			return False
+		else:
+			return True
+
+
+	def _get_first_row_from_table(self, table_node):
 		rows = table_node.xpath("tr")
 		first_row = rows[1]
 		data_row = first_row.xpath("td/text()")
 		return data_row
 
-	def __get_payload_from_form(self, form_node):
+	def _get_payload_from_form(self, form_node):
 		input_nodes = form_node.xpath("input")
 		payload = {}
 		for input_node in input_nodes:

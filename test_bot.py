@@ -1,14 +1,18 @@
 import unittest
 import os
 from lxml import html
-
+from saime_bot import UserApi
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 
 class SaimeBotTests(unittest.TestCase):
+
+	def setUp(self):
+		self.user_api = UserApi(username="blala",password="blala")
+
 	def test_row_data_from_table_node(self):
-		from saime_bot import get_table_row
+		
 		table_str = """
 			<table class="table" cellpadding="0" cellspacing="0">
 			<tr>
@@ -38,23 +42,30 @@ class SaimeBotTests(unittest.TestCase):
 			</table>
 		"""
 		table_node = html.fromstring(table_str)
-		row = get_table_row(table_node)
+		row = self.user_api._get_first_row_from_table(table_node)
 		self.assertEqual(row[0],'123456')
 		self.assertEqual(row[1],'Pancho Villa')
 		self.assertEqual(row[2],'M')
 		self.assertEqual(row[3],'17/12/1988')
 
 	def test_payload_from_form(self):
-		from saime_bot import get_payload_from_form
 		file_path = os.path.join(BASE_DIR, 'tests/data/express.html')
 		with open(file_path, 'r') as myfile:
 			express_html = myfile.read()
 
 		form_node = html.fromstring(express_html).get_element_by_id("pago-form")
-		payload = get_payload_from_form(form_node)
+		payload = self.user_api._get_payload_from_form(form_node)
 		self.assertEqual(len(payload), 5)
 
+	def test_disabled_payment_site(self):
+		file_path = os.path.join(BASE_DIR, 'tests/data/express_failed.html')
+		with open(file_path, 'r') as myfile:
+			express_html = myfile.read()
 
+		self.assertEqual(self.user_api._is_payment_form_enable(site_text=express_html), False)
+
+		test_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+		self.assertEqual(self.user_api._is_payment_form_enable(site_text=test_text), True)
 
 def main():
     unittest.main()
