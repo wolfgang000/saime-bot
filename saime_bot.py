@@ -9,6 +9,7 @@ USERNAME = config['DEFAULT']['USERNAME']
 PASSWORD = config['DEFAULT']['PASSWORD']
 RECAPTCHA_TOKEN = ""
 
+
 class UserApi():
 	BASE_URL = "https://tramites.saime.gob.ve/"
 	LOGIN_URL = "https://tramites.saime.gob.ve/index.php?r=site/login"
@@ -20,6 +21,13 @@ class UserApi():
 		self.session_requests = requests.session()
 		self.username = username
 		self.password = password
+
+	def is_site_up(self):
+		result = self.session_requests.get(self.BASE_URL, headers = dict(referer = self.BASE_URL))
+		if result.status_code == 200:
+			return True
+		else:
+			return False
 
 	def login(self):
 		payload = {
@@ -33,13 +41,18 @@ class UserApi():
 			headers = dict(referer = self.
 			LOGIN_URL)
 		)
-		if(response.status_code == 302):
+		if response.status_code == 502:
+			raise self.SiteIsDown()
+		elif response.status_code == 302:
 			return True
 		else:
 			return False
 	
 	def check_login(self):
 		response = self.session_requests.get(self.HOME_URL, headers = dict(referer = self.HOME_URL))
+		if response.status_code == 502:
+			raise self.SiteIsDown()
+
 		tree = html.fromstring(response.content)
 		try:
 			tree.get_element_by_id('login-form')
@@ -49,9 +62,12 @@ class UserApi():
 
 	def get_user_data(self):
 		result = self.session_requests.get(self.HOME_URL, headers = dict(referer = self.HOME_URL))
+		if result.status_code == 502:
+			raise self.SiteIsDown()
+		
 		tree = html.fromstring(result.content)
 		table_node = tree.xpath('//table')
-		row_data = self.__get_table_row(table_node[0])
+		row_data = self.__get_first_row_from_table(table_node[0])
 		return {
 			'ci': row_data[0], 
 			'full_name': row_data[1],
@@ -62,6 +78,8 @@ class UserApi():
 	def get_payment_form(self):
 		print("start payment")
 		response = self.session_requests.get(self.EXPRESS_URL, headers = dict(referer = self.EXPRESS_URL))
+		if response.status_code == 502:
+			raise self.SiteIsDown()
 		tree = html.fromstring(response.content)
 		form_node = tree.get_element_by_id("pago-form")
 		payload = self.__get_payload_from_form(form_node)
@@ -70,15 +88,13 @@ class UserApi():
 			data = payload, 
 			headers = dict(referer = self.PAYMENT_URL)
 		)
+		if response.status_code == 502:
+			raise self.SiteIsDown()
 		print("status:",response.status_code)
 		print("headers:",response.headers)
 		print("content:",response.content)
-		
-
-
-
 	
-	def __get_table_row(self, table_node):
+	def __get_first_row_from_table(self, table_node):
 		rows = table_node.xpath("tr")
 		first_row = rows[1]
 		data_row = first_row.xpath("td/text()")
@@ -90,6 +106,12 @@ class UserApi():
 		for input_node in input_nodes:
 			payload[input_node.name] = input_node.value
 		return payload
+	
+	class SiteIsDown(Exception):
+		pass
+
+	class LoginFailed(Exception):
+		pass
 	
 
 
