@@ -63,9 +63,28 @@ class SaimeBotTests(unittest.TestCase):
 			express_html = myfile.read()
 
 		self.assertEqual(self.user_api._is_payment_form_enable(site_text=express_html), False)
-
 		test_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
 		self.assertEqual(self.user_api._is_payment_form_enable(site_text=test_text), True)
+	
+	def test_is_login_site(self):
+		file_path = os.path.join(BASE_DIR, 'tests/data/login.html')
+		with open(file_path, 'r') as myfile:
+			login_html = myfile.read()
+
+		self.assertEqual(self.user_api._is_login_page(site_text=login_html), True)
+		test_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+		self.assertEqual(self.user_api._is_login_page(site_text=test_text), False)
+		
+	
+	def test_write_file(self):
+		file_path = os.path.join(BASE_DIR, 'tests/data/express_failed.html')
+		with open(file_path, 'r') as myfile:
+			express_html = myfile.read()
+
+		file_path = os.path.join(BASE_DIR, 'textfile.html')
+		with open(file_path, 'w') as myfile:
+			myfile.write(express_html)
+
 
 def main():
     unittest.main()

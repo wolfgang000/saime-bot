@@ -1,6 +1,9 @@
 import requests
 from lxml import html
 import configparser
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 config = configparser.ConfigParser()
 config.read('USER_CREDENTIAL.INI')
@@ -34,7 +37,11 @@ class UserApi():
 		self.password = password
 
 	def is_site_up(self):
-		result = self.session_requests.get(self.BASE_URL, headers = dict(referer = self.BASE_URL))
+		result = self.session_requests.get(
+			self.BASE_URL, 
+			headers = dict(referer = self.BASE_URL),
+			timeout = 20
+		)
 		if result.status_code == 200:
 			return True
 		else:
@@ -49,21 +56,29 @@ class UserApi():
 		response = self.session_requests.post(
 			self.LOGIN_URL, 
 			data = payload, 
-			headers = dict(referer = self.
-			LOGIN_URL)
+			headers = dict(referer = self.LOGIN_URL),
+			timeout = 20
 		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
 	
 	def check_login(self):
-		response = self.session_requests.get(self.HOME_URL, headers = dict(referer = self.HOME_URL))
+		response = self.session_requests.get(
+			self.HOME_URL, 
+			headers = dict(referer = self.HOME_URL), 
+			timeout = 20
+		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
 		return not self._is_login_page(response.content.decode('utf_8'))
 
 
 	def get_user_data(self):
-		result = self.session_requests.get(self.HOME_URL, headers = dict(referer = self.HOME_URL))
+		result = self.session_requests.get(
+			self.HOME_URL, 
+			headers = dict(referer = self.HOME_URL),
+			timeout = 20
+		)
 		if result.status_code == 502:
 			raise self.SiteIsDown()
 		
@@ -78,7 +93,11 @@ class UserApi():
 		}
 	
 	def is_express_passport_payment_enable(self):
-		response = self.session_requests.get(self.EXPRESS_URL, headers = dict(referer = self.EXPRESS_URL))
+		response = self.session_requests.get(
+			self.EXPRESS_URL,
+			headers = dict(referer = self.EXPRESS_URL),
+			timeout = 20
+		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
 		
@@ -88,12 +107,18 @@ class UserApi():
 		response = self.session_requests.post(
 			self.PAYMENT_URL, 
 			data = payload, 
-			headers = dict(referer = self.PAYMENT_URL)
+			headers = dict(referer = self.PAYMENT_URL),
+			timeout = 20
 		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
 		else:
-			return self._is_payment_form_enable(response.content.decode('utf_8'))
+			is_payment_form_enable = self._is_payment_form_enable(response.content.decode('utf_8'))
+			if is_payment_form_enable:
+				file_path = os.path.join(BASE_DIR, 'textfile.html')
+				with open(file_path, 'w') as myfile:
+					myfile.write(response.content.decode('utf_8'))
+			return is_payment_form_enable
 
 	def _is_payment_form_enable(self, site_text):
 		error_msg = "Estimado ciudadano, le invitamos a acceder a la solicitud de prórroga de pasaporte en Venezuela,"
@@ -130,27 +155,44 @@ class UserApi():
 		pass
 	
 
+import time
+import datetime
 
 def main():
 	bot = UserApi(username=USERNAME, password=PASSWORD)
 	
+	while True:
+		try:
+			print(datetime.datetime.now(),"Checking logged in...")
+			if bot.check_login():
+				print(datetime.datetime.now(),"Still loging")
 
-	print("Perform logged in...")
-	bot.login()
+				print(datetime.datetime.now(),"Checking express")
+				if bot.is_express_passport_payment_enable():
+					print(datetime.datetime.now(),"Express enable!!!")
+					send_notification("Tramite express habilitado CORRE!")
+					break
 
-	print("Checking logged in...")
-	login_success = bot.check_login()
-	if login_success:
-		print("You have been successfully logged in!")
-
-		if bot.is_express_passport_payment_enable():
-			send_notification("Tramite express habilitado CORRE!")
-
-	else:
-		print("Logged in failed :( ")
-
+			else:
+				print(datetime.datetime.now(),"logout...")
+				
+				print(datetime.datetime.now(),"Trying login...")
+				bot.login()
+			
+		except UserApi.SiteIsDown:
+			print(datetime.datetime.now(),"Site down....")
+		except requests.exceptions.RequestException as err:
+			print(datetime.datetime.now(),"Connection error....")
+			print(datetime.datetime.now(), err)
+			time.sleep(10)
+			continue
+		
+		
+		print(datetime.datetime.now(),"Going to sleep....")
+		time.sleep(60) 
+		
+	print("Exiting...")
     
-
 
 if __name__ == '__main__':
     main()
