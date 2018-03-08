@@ -121,11 +121,14 @@ class UserApi():
 			return is_payment_form_enable
 
 	def _is_payment_form_enable(self, site_text):
-		error_msg = "Estimado ciudadano, le invitamos a acceder a la solicitud de prórroga de pasaporte en Venezuela,"
-		if error_msg in site_text:
+		payment_form = form_node = html.fromstring(site_text).get_element_by_id("banesco-form", None)
+		
+		print(payment_form)
+		if payment_form == None:
 			return False
 		else:
 			return True
+
 
 	def _is_login_page(self, site_text):
 		error_msg = "Para ingresar debe usar el usuario y clave del portal pasaporte."
@@ -142,12 +145,11 @@ class UserApi():
 		return data_row
 
 	def _get_payload_from_form(self, form_node):
-		input_nodes = form_node.xpath("input")
 		payload = {}
-		for input_node in input_nodes:
-			payload[input_node.name] = input_node.value
+		for name, value in form_node.form_values():
+			payload[name] = value
 		return payload
-	
+
 	class SiteIsDown(Exception):
 		pass
 

@@ -55,16 +55,20 @@ class SaimeBotTests(unittest.TestCase):
 
 		form_node = html.fromstring(express_html).get_element_by_id("pago-form")
 		payload = self.user_api._get_payload_from_form(form_node)
-		self.assertEqual(len(payload), 5)
+		self.assertEqual(len(payload), 4, msg=payload)
+
 
 	def test_disabled_payment_site(self):
 		file_path = os.path.join(BASE_DIR, 'tests/data/express_failed.html')
 		with open(file_path, 'r') as myfile:
 			express_html = myfile.read()
-
 		self.assertEqual(self.user_api._is_payment_form_enable(site_text=express_html), False)
-		test_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
-		self.assertEqual(self.user_api._is_payment_form_enable(site_text=test_text), True)
+		
+
+		file_path = os.path.join(BASE_DIR, 'tests/data/payment_site.html')
+		with open(file_path, 'r') as myfile:
+			express_html = myfile.read()
+		self.assertEqual(self.user_api._is_payment_form_enable(site_text=express_html), True)
 	
 	def test_is_login_site(self):
 		file_path = os.path.join(BASE_DIR, 'tests/data/login.html')
