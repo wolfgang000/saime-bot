@@ -102,7 +102,10 @@ class UserApi():
 			raise self.SiteIsDown()
 		
 		tree = html.fromstring(response.content)
-		form_node = tree.get_element_by_id("pago-form")
+		form_node = tree.get_element_by_id("pago-form", None)
+		if form_node == None:
+			raise self.ExpressPassportPaymentFormNotFound()
+			
 		payload = self._get_payload_from_form(form_node)
 		response = self.session_requests.post(
 			self.PAYMENT_URL, 
@@ -154,6 +157,8 @@ class UserApi():
 	class LoginFailed(Exception):
 		pass
 	
+	class ExpressPassportPaymentFormNotFound(Exception):
+		pass
 
 import time
 import datetime
@@ -181,6 +186,10 @@ def main():
 			print(datetime.datetime.now(),"Site down....")
 		except UserApi.PaymentFormDisabled:
 			print(datetime.datetime.now(),"Payment form disabled....")
+		except UserApi.ExpressPassportPaymentFormNotFound:
+			print(datetime.datetime.now(),"Express Passport Payment Form Not Found, exiting....")
+			send_notification("quisas se pago...")
+			break
 		except requests.exceptions.RequestException as err:
 			print(datetime.datetime.now(),"Connection error....")
 			print(datetime.datetime.now(), err)
