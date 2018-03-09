@@ -92,7 +92,7 @@ class UserApi():
 			'birth_date': row_data[3]
 		}
 	
-	def is_express_passport_payment_enable(self):
+	def get_express_passport_payment_form(self):
 		response = self.session_requests.get(
 			self.EXPRESS_URL,
 			headers = dict(referer = self.EXPRESS_URL),
@@ -113,22 +113,14 @@ class UserApi():
 		if response.status_code == 502:
 			raise self.SiteIsDown()
 		else:
-			is_payment_form_enable = self._is_payment_form_enable(response.content.decode('utf_8'))
-			if is_payment_form_enable:
-				file_path = os.path.join(BASE_DIR, 'textfile.html')
-				with open(file_path, 'w') as myfile:
-					myfile.write(response.content.decode('utf_8'))
-			return is_payment_form_enable
+			payment_form = self._get_payment_form(response.content)
+			if payment_form == None:
+				raise self.PaymentFormDisabled()
 
-	def _is_payment_form_enable(self, site_text):
-		payment_form = form_node = html.fromstring(site_text).get_element_by_id("banesco-form", None)
-		
-		print(payment_form)
-		if payment_form == None:
-			return False
-		else:
-			return True
+			return payment_form
 
+	def _get_payment_form(self, site_text):
+		return html.fromstring(site_text).get_element_by_id("banesco-form", None)
 
 	def _is_login_page(self, site_text):
 		error_msg = "Para ingresar debe usar el usuario y clave del portal pasaporte."
@@ -152,6 +144,12 @@ class UserApi():
 
 	class SiteIsDown(Exception):
 		pass
+	
+	class PaymentFormDisabled(Exception):
+		pass
+
+	class PaymentGatwwayDisabled(Exception):
+		pass
 
 	class LoginFailed(Exception):
 		pass
@@ -169,11 +167,9 @@ def main():
 			if bot.check_login():
 				print(datetime.datetime.now(),"Still loging")
 
-				print(datetime.datetime.now(),"Checking express")
-				if bot.is_express_passport_payment_enable():
-					print(datetime.datetime.now(),"Express enable!!!")
-					send_notification("Tramite express habilitado CORRE!")
-					break
+				print(datetime.datetime.now(),"Getting express passport payment form")
+				payment_form = bot.get_express_passport_payment_form()
+
 
 			else:
 				print(datetime.datetime.now(),"logout...")
@@ -183,6 +179,8 @@ def main():
 			
 		except UserApi.SiteIsDown:
 			print(datetime.datetime.now(),"Site down....")
+		except UserApi.PaymentFormDisabled:
+			print(datetime.datetime.now(),"Payment form disabled....")
 		except requests.exceptions.RequestException as err:
 			print(datetime.datetime.now(),"Connection error....")
 			print(datetime.datetime.now(), err)
