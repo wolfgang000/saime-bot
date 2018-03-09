@@ -12,6 +12,18 @@ USERNAME = config['DEFAULT']['USERNAME']
 PASSWORD = config['DEFAULT']['PASSWORD']
 PUSHED_APP_KEY = config['DEFAULT']['PUSHED_APP_KEY']
 PUSHED_APP_SECRET = config['DEFAULT']['PUSHED_APP_SECRET']
+default = config['DEFAULT']
+
+
+CARD_HOLDER_CI = default['CARD_HOLDER_CI']
+CARD_TYPE = default['CARD_TYPE']
+CARD_HOLDER = default['CARD_HOLDER']
+print("holder",CARD_HOLDER)
+CARD_NUMBER = default['CARD_NUMBER']
+CARD_CVV = default['CARD_CVV']
+CARD_EXPIRATION_DATE_MONTH = default['CARD_EXPIRATION_DATE_MONTH']
+CARD_EXPIRATION_DATE_YEAR = default['CARD_EXPIRATION_DATE_YEAR']
+SECRET_ANSWER = default['SECRET_ANSWER']
 
 
 def send_notification(msg):
@@ -132,6 +144,41 @@ class UserApi():
 		else:
 			return False
 
+	def perform_payment(self, payment_form, card_ci, card_type, card_holder_name, card_number, card_cvc, card_expiration_date_month, card_expiration_date_year, sequirity_question):
+		payload = payment_form.fields
+
+		payload['Banesco[cardHolderId]'] = card_ci
+		payload['Banesco[tipoTarjeta]'] = card_type
+		payload['Banesco[cardHolder]'] = card_holder_name
+		payload['Banesco[cardNumber]'] = card_number
+		payload['Banesco[cvc]'] = card_cvc
+		payload['Banesco[expirationDateMonth]'] = card_expiration_date_month
+		payload['Banesco[expirationDateYear]'] = card_expiration_date_year
+		payload['Banesco[respuesta]'] = sequirity_question
+		
+		response = self.session_requests.post(
+			self.PAYMENT_URL, 
+			data = payload, 
+			headers = dict(referer = self.PAYMENT_URL),
+			timeout = 35
+		)
+		if response.status_code == 502:
+			raise self.SiteIsDown()
+		else:
+			error_msg = 'Estimado ciudadano usted posee el máximo de pagos permitidos para este tipo de tramite en este año'
+			if error_msg in response.content.decode('utf_8'):
+				raise self.PaymentGatwwayDisabled()
+			else:
+				file_path = os.path.join(BASE_DIR, 'success.html') 
+				with open(file_path, 'w') as myfile: 
+					myfile.write(response.content.decode('utf_8')) 
+				send_notification("parece que se pago")
+
+
+
+		
+
+
 
 	def _get_first_row_from_table(self, table_node):
 		rows = table_node.xpath("tr")
@@ -174,7 +221,19 @@ def main():
 
 				print(datetime.datetime.now(),"Getting express passport payment form")
 				payment_form = bot.get_express_passport_payment_form()
-
+				bot.perform_payment(
+					payment_form=payment_form,
+					card_ci=CARD_HOLDER_CI,
+					card_type=CARD_TYPE,
+					card_holder_name=CARD_HOLDER,
+					card_number=CARD_NUMBER,
+					card_cvc=CARD_CVV,
+					card_expiration_date_month=CARD_EXPIRATION_DATE_MONTH,
+					card_expiration_date_year=CARD_EXPIRATION_DATE_YEAR,
+					sequirity_question=SECRET_ANSWER,
+				)
+				print("Payment success")
+				break
 
 			else:
 				print(datetime.datetime.now(),"logout...")

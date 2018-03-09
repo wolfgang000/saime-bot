@@ -62,13 +62,13 @@ class SaimeBotTests(unittest.TestCase):
 		file_path = os.path.join(BASE_DIR, 'tests/data/express_failed.html')
 		with open(file_path, 'r') as myfile:
 			express_html = myfile.read()
-		self.assertEqual(self.user_api._is_payment_form_enable(site_text=express_html), False)
+		self.assertIsNone(self.user_api._get_payment_form(site_text=express_html))
 		
 
 		file_path = os.path.join(BASE_DIR, 'tests/data/payment_site.html')
 		with open(file_path, 'r') as myfile:
 			express_html = myfile.read()
-		self.assertEqual(self.user_api._is_payment_form_enable(site_text=express_html), True)
+		self.assertIsNotNone(self.user_api._get_payment_form(site_text=express_html))
 	
 	def test_is_login_site(self):
 		file_path = os.path.join(BASE_DIR, 'tests/data/login.html')
@@ -88,6 +88,18 @@ class SaimeBotTests(unittest.TestCase):
 		file_path = os.path.join(BASE_DIR, 'textfile.html')
 		with open(file_path, 'w') as myfile:
 			myfile.write(express_html)
+	
+	def test_perform_payment(self):
+		file_path = os.path.join(BASE_DIR, 'tests/data/payment_site.html')
+		with open(file_path, 'r') as myfile:
+			express_html = myfile.read()
+
+		form_node = html.fromstring(express_html).get_element_by_id("banesco-form")
+		payload = self.user_api._get_payload_from_form(form_node)
+		for p in payload:
+			print(p)
+		self.assertEqual(len(payload), 4, msg=payload)
+
 
 
 def main():
