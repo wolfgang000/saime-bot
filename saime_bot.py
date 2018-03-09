@@ -18,7 +18,6 @@ default = config['DEFAULT']
 CARD_HOLDER_CI = default['CARD_HOLDER_CI']
 CARD_TYPE = default['CARD_TYPE']
 CARD_HOLDER = default['CARD_HOLDER']
-print("holder",CARD_HOLDER)
 CARD_NUMBER = default['CARD_NUMBER']
 CARD_CVV = default['CARD_CVV']
 CARD_EXPIRATION_DATE_MONTH = default['CARD_EXPIRATION_DATE_MONTH']
