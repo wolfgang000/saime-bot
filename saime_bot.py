@@ -144,7 +144,8 @@ class UserApi():
 			return False
 
 	def perform_payment(self, payment_form, card_ci, card_type, card_holder_name, card_number, card_cvc, card_expiration_date_month, card_expiration_date_year, sequirity_question):
-		payload = payment_form.fields
+		
+		payload = self._get_payload_from_form(payment_form)
 
 		payload['Banesco[cardHolderId]'] = card_ci
 		payload['Banesco[tipoTarjeta]'] = card_type

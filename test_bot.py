@@ -95,10 +95,10 @@ class SaimeBotTests(unittest.TestCase):
 			express_html = myfile.read()
 
 		form_node = html.fromstring(express_html).get_element_by_id("banesco-form")
-		payload = self.user_api._get_payload_from_form(form_node)
-		for p in payload:
-			print(p)
-		self.assertEqual(len(payload), 4, msg=payload)
+		payload = self.user_api.perform_payment(form_node,
+			card_ci=None, card_type=None, card_holder_name=None, card_number=None, card_cvc=None, card_expiration_date_month=None, card_expiration_date_year=None, sequirity_question=None
+		)
+
 
 
 
