@@ -3,13 +3,12 @@ from lxml import html
 import configparser
 import os
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 config = configparser.ConfigParser()
 config.read('USER_CREDENTIAL.INI')
 
-USERNAME = config['DEFAULT']['USERNAME']
-PASSWORD = config['DEFAULT']['PASSWORD']
 PUSHED_APP_KEY = config['DEFAULT']['PUSHED_APP_KEY']
 PUSHED_APP_SECRET = config['DEFAULT']['PUSHED_APP_SECRET']
 default = config['DEFAULT']
@@ -42,10 +41,11 @@ class UserApi():
 	PAYMENT_URL = "https://tramites.saime.gob.ve/index.php?r=pago/pago/formpago"
 	EXPRESS_URL = "https://tramites.saime.gob.ve/index.php?r=inicio/inicio/agilizacion"
 
-	def __init__(self, username, password):
+	def __init__(self, username, password, secret_answer):
 		self.session_requests = requests.session()
 		self.username = username
 		self.password = password
+		self.secret_answer = secret_answer
 
 	def is_site_up(self):
 		result = self.session_requests.get(
@@ -143,7 +143,7 @@ class UserApi():
 		else:
 			return False
 
-	def perform_payment(self, payment_form, card_ci, card_type, card_holder_name, card_number, card_cvc, card_expiration_date_month, card_expiration_date_year, sequirity_question):
+	def perform_payment(self, payment_form, card_ci, card_type, card_holder_name, card_number, card_cvc, card_expiration_date_month, card_expiration_date_year,):
 		
 		payload = self._get_payload_from_form(payment_form)
 
@@ -154,13 +154,13 @@ class UserApi():
 		payload['Banesco[cvc]'] = card_cvc
 		payload['Banesco[expirationDateMonth]'] = card_expiration_date_month
 		payload['Banesco[expirationDateYear]'] = card_expiration_date_year
-		payload['Banesco[respuesta]'] = sequirity_question
+		payload['Banesco[respuesta]'] = self.secret_answer
 		
 		response = self.session_requests.post(
 			self.PAYMENT_URL, 
 			data = payload, 
 			headers = dict(referer = self.PAYMENT_URL),
-			timeout = 35
+			timeout = 30
 		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
@@ -169,10 +169,10 @@ class UserApi():
 			if error_msg in response.content.decode('utf_8'):
 				raise self.PaymentGatwwayDisabled()
 			else:
-				file_path = os.path.join(BASE_DIR, 'success.html') 
+				file_path = os.path.join(BASE_DIR, self.username + 'success.html') 
 				with open(file_path, 'w') as myfile: 
 					myfile.write(response.content.decode('utf_8')) 
-				send_notification("parece que se pago")
+				send_notification("parece que se pago:" + self.username)
 
 
 
@@ -209,57 +209,83 @@ class UserApi():
 
 import time
 import datetime
+from collections import deque
+import json
+
 
 def main():
-	bot = UserApi(username=USERNAME, password=PASSWORD)
-	
+
+	file_path = os.path.join(BASE_DIR, 'users.json')
+	with open(file_path, 'r') as myfile:
+		express_html = myfile.read()
+	users = json.loads(express_html)
+
+
+	d = deque() 
+	for user in users:
+		d.append(UserApi(
+			username=user['username'],
+			password=user['password'],
+			secret_answer = user['secret_answer']
+			)
+		)
 	while True:
 		try:
-			print(datetime.datetime.now(),"Checking logged in...")
-			if bot.check_login():
-				print(datetime.datetime.now(),"Still loging")
+			bot = d.popleft()
+			while True:
+				print("user:", bot.username )
+				try:
+					print(datetime.datetime.now(),"Checking logged in...")
+					if bot.check_login():
+						print(datetime.datetime.now(),"Still loging")
 
-				print(datetime.datetime.now(),"Getting express passport payment form")
-				payment_form = bot.get_express_passport_payment_form()
-				bot.perform_payment(
-					payment_form=payment_form,
-					card_ci=CARD_HOLDER_CI,
-					card_type=CARD_TYPE,
-					card_holder_name=CARD_HOLDER,
-					card_number=CARD_NUMBER,
-					card_cvc=CARD_CVV,
-					card_expiration_date_month=CARD_EXPIRATION_DATE_MONTH,
-					card_expiration_date_year=CARD_EXPIRATION_DATE_YEAR,
-					sequirity_question=SECRET_ANSWER,
-				)
-				print("Payment success")
-				break
+						print(datetime.datetime.now(),"Getting express passport payment form")
+						payment_form = bot.get_express_passport_payment_form()
+						bot.perform_payment(
+							payment_form=payment_form,
+							card_ci=CARD_HOLDER_CI,
+							card_type=CARD_TYPE,
+							card_holder_name=CARD_HOLDER,
+							card_number=CARD_NUMBER,
+							card_cvc=CARD_CVV,
+							card_expiration_date_month=CARD_EXPIRATION_DATE_MONTH,
+							card_expiration_date_year=CARD_EXPIRATION_DATE_YEAR,
+							sequirity_question=SECRET_ANSWER,
+						)
+						print("Payment success")
+						break
 
-			else:
-				print(datetime.datetime.now(),"logout...")
-				
-				print(datetime.datetime.now(),"Trying login...")
-				bot.login()
-			
-		except UserApi.SiteIsDown:
-			print(datetime.datetime.now(),"Site down....")
-		except UserApi.PaymentFormDisabled:
-			print(datetime.datetime.now(),"Payment form disabled....")
-		except UserApi.ExpressPassportPaymentFormNotFound:
-			print(datetime.datetime.now(),"Express Passport Payment Form Not Found, exiting....")
-			send_notification("quisas se pago...")
+					else:
+						print(datetime.datetime.now(),"logout...")
+						
+						print(datetime.datetime.now(),"Trying login...")
+						bot.login()
+					
+				except UserApi.SiteIsDown:
+					print(datetime.datetime.now(),"Site down....")
+				except UserApi.PaymentFormDisabled:
+					print(datetime.datetime.now(),"Payment form disabled....")
+				except UserApi.ExpressPassportPaymentFormNotFound:
+					print(datetime.datetime.now(),"Express Passport Payment Form Not Found, exiting....")
+					send_notification("quisas se pago...")
+					break
+				except requests.exceptions.RequestException as err:
+					print(datetime.datetime.now(),"Connection error....")
+					print(datetime.datetime.now(), err)
+					time.sleep(10)
+					continue
+	
+				print(datetime.datetime.now(),"Going to sleep....")
+				time.sleep(31) 
+
+		except IndexError:
 			break
-		except requests.exceptions.RequestException as err:
-			print(datetime.datetime.now(),"Connection error....")
-			print(datetime.datetime.now(), err)
-			time.sleep(10)
-			continue
-		
-		
-		print(datetime.datetime.now(),"Going to sleep....")
-		time.sleep(60) 
-		
 	print("Exiting...")
+
+	
+
+		
+	
     
 
 if __name__ == '__main__':
