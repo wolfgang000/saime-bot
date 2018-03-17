@@ -72,8 +72,11 @@ class UserApi():
 		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
+
+		if self._is_login_page(response.content.decode('utf_8')):
+			raise self.LoginFailed()
 	
-	def check_login(self):
+	def is_login(self):
 		response = self.session_requests.get(
 			self.HOME_URL, 
 			headers = dict(referer = self.HOME_URL), 
@@ -81,6 +84,7 @@ class UserApi():
 		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
+		
 		return not self._is_login_page(response.content.decode('utf_8'))
 
 
@@ -102,8 +106,13 @@ class UserApi():
 			'sex': row_data[2],
 			'birth_date': row_data[3]
 		}
+
 	
-	def get_express_passport_payment_form(self):
+	
+	def get_express_passport_payment_form_links(self):
+		'''
+		Return forms links to the express passport payment form
+		'''
 		response = self.session_requests.get(
 			self.EXPRESS_URL,
 			headers = dict(referer = self.EXPRESS_URL),
@@ -113,11 +122,18 @@ class UserApi():
 			raise self.SiteIsDown()
 		
 		tree = html.fromstring(response.content)
-		form_node = tree.get_element_by_id("pago-form", None)
-		if form_node == None:
+		form_nodes = tree.xpath('//form')
+		#Check if there are payment forms
+		if not form_nodes:
 			raise self.ExpressPassportPaymentFormNotFound()
-			
-		payload = self._get_payload_from_form(form_node)
+
+		return form_nodes
+	
+	def get_express_passport_payment_form(self, form_node_link):
+		'''
+		Return the actual payment form for the express passport
+		'''
+		payload = self._get_payload_from_form(form_node_link)
 		response = self.session_requests.post(
 			self.PAYMENT_URL, 
 			data = payload, 
@@ -151,15 +167,15 @@ class UserApi():
 		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
-		else:
-			error_msg = 'Estimado ciudadano usted posee el máximo de pagos permitidos para este tipo de tramite en este año'
-			if error_msg in response.content.decode('utf_8'):
-				raise self.PaymentGatwwayDisabled()
-			else:
-				file_path = os.path.join(BASE_DIR, self.username + 'success.html') 
-				with open(file_path, 'w') as myfile: 
-					myfile.write(response.content.decode('utf_8')) 
-				send_notification("parece que se pago:" + self.username)
+
+		error_msg = 'Estimado ciudadano usted posee el máximo de pagos permitidos para este tipo de tramite en este año'
+		if error_msg in response.content.decode('utf_8'):
+			raise self.PaymentGatwwayDisabled()
+
+		file_path = os.path.join(BASE_DIR, self.username + 'success.html') 
+		with open(file_path, 'w') as myfile: 
+			myfile.write(response.content.decode('utf_8')) 
+		send_notification("parece que se pago:" + self.username)
 
 	def _get_payment_form(self, site_text):
 		return html.fromstring(site_text).get_element_by_id("banesco-form", None)
@@ -227,11 +243,18 @@ def main():
 				print("user:", bot.username )
 				try:
 					print(datetime.datetime.now(),"Checking logged in...")
-					if bot.check_login():
+					if not bot.is_login():
+						print(datetime.datetime.now(),"logout...")	
+						print(datetime.datetime.now(),"Trying login...")
+						bot.login()
+					else:
 						print(datetime.datetime.now(),"Still loging")
 
-						print(datetime.datetime.now(),"Getting express passport payment form")
-						payment_form = bot.get_express_passport_payment_form()
+					print(datetime.datetime.now(),"Getting express passport payment form links")
+					payment_form_links = bot.get_express_passport_payment_form_links()
+
+					for payment_form_link in payment_form_links:
+						payment_form = bot.get_express_passport_payment_form(payment_form_link)
 						bot.perform_payment(
 							payment_form=payment_form,
 							card_ci=CARD_HOLDER_CI,
@@ -244,21 +267,21 @@ def main():
 							sequirity_question=SECRET_ANSWER,
 						)
 						print("Payment success")
-						break
+					break
 
-					else:
-						print(datetime.datetime.now(),"logout...")
-						
-						print(datetime.datetime.now(),"Trying login...")
-						bot.login()
 					
 				except UserApi.SiteIsDown:
 					print(datetime.datetime.now(),"Site down....")
 				except UserApi.PaymentFormDisabled:
 					print(datetime.datetime.now(),"Payment form disabled....")
+				
 				except UserApi.ExpressPassportPaymentFormNotFound:
 					print(datetime.datetime.now(),"Express Passport Payment Form Not Found, exiting....")
 					send_notification("quisas se pago...")
+					break
+				except UserApi.LoginFailed:
+					print(datetime.datetime.now(),"Login error with user:{}, check username and password, exiting....".format(bot.username))
+					send_notification("Error login with user:{}...".format(bot.username))
 					break
 				except requests.exceptions.RequestException as err:
 					print(datetime.datetime.now(),"Connection error....")
@@ -270,6 +293,7 @@ def main():
 				time.sleep(31) 
 
 		except IndexError:
+			print("No more accounts left")
 			break
 	print("Exiting...")
 
