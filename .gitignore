@@ -64,3 +64,5 @@ instance/
 
 virtual/
 USER_CREDENTIAL.INI
+users.json
+.vscode/.ropeproject/config.py
