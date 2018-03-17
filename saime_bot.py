@@ -264,7 +264,6 @@ def main():
 							card_cvc=CARD_CVV,
 							card_expiration_date_month=CARD_EXPIRATION_DATE_MONTH,
 							card_expiration_date_year=CARD_EXPIRATION_DATE_YEAR,
-							sequirity_question=SECRET_ANSWER,
 						)
 						print("Payment success")
 					break
