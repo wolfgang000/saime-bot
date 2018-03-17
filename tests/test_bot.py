@@ -49,7 +49,7 @@ class SaimeBotTests(unittest.TestCase):
 		self.assertEqual(row[3],'17/12/1988')
 
 	def test_payload_from_form(self):
-		file_path = os.path.join(BASE_DIR, 'tests/data/express.html')
+		file_path = os.path.join(BASE_DIR, 'data/express_single.html')
 		with open(file_path, 'r') as myfile:
 			express_html = myfile.read()
 
@@ -59,19 +59,19 @@ class SaimeBotTests(unittest.TestCase):
 
 
 	def test_disabled_payment_site(self):
-		file_path = os.path.join(BASE_DIR, 'tests/data/express_failed.html')
+		file_path = os.path.join(BASE_DIR, 'data/express_failed.html')
 		with open(file_path, 'r') as myfile:
 			express_html = myfile.read()
 		self.assertIsNone(self.user_api._get_payment_form(site_text=express_html))
 		
 
-		file_path = os.path.join(BASE_DIR, 'tests/data/payment_site.html')
+		file_path = os.path.join(BASE_DIR, 'data/payment_site.html')
 		with open(file_path, 'r') as myfile:
 			express_html = myfile.read()
 		self.assertIsNotNone(self.user_api._get_payment_form(site_text=express_html))
 	
 	def test_is_login_site(self):
-		file_path = os.path.join(BASE_DIR, 'tests/data/login.html')
+		file_path = os.path.join(BASE_DIR, 'data/login.html')
 		with open(file_path, 'r') as myfile:
 			login_html = myfile.read()
 
@@ -80,23 +80,21 @@ class SaimeBotTests(unittest.TestCase):
 		self.assertEqual(self.user_api._is_login_page(site_text=test_text), False)
 		
 	
-	def test_write_file(self):
-		file_path = os.path.join(BASE_DIR, 'tests/data/express_failed.html')
-		with open(file_path, 'r') as myfile:
-			express_html = myfile.read()
-
-		file_path = os.path.join(BASE_DIR, 'textfile.html')
-		with open(file_path, 'w') as myfile:
-			myfile.write(express_html)
 	
 	def test_perform_payment(self):
-		file_path = os.path.join(BASE_DIR, 'tests/data/payment_site.html')
+		file_path = os.path.join(BASE_DIR, 'data/payment_site.html')
 		with open(file_path, 'r') as myfile:
 			express_html = myfile.read()
 
 		form_node = html.fromstring(express_html).get_element_by_id("banesco-form")
 		payload = self.user_api.perform_payment(form_node,
-			card_ci=None, card_type=None, card_holder_name=None, card_number=None, card_cvc=None, card_expiration_date_month=None, card_expiration_date_year=None, sequirity_question=None
+			card_ci=None, 
+			card_type=None, 
+			card_holder_name=None, 
+			card_number=None, 
+			card_cvc=None, 
+			card_expiration_date_month=None, 
+			card_expiration_date_year=None, 
 		)
 
 

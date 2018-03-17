@@ -126,27 +126,14 @@ class UserApi():
 		)
 		if response.status_code == 502:
 			raise self.SiteIsDown()
-		else:
-			payment_form = self._get_payment_form(response.content)
-			if payment_form == None:
-				raise self.PaymentFormDisabled()
+		payment_form = self._get_payment_form(response.content)
+		if payment_form == None:
+			raise self.PaymentFormDisabled()
 
-			return payment_form
-
-	def _get_payment_form(self, site_text):
-		return html.fromstring(site_text).get_element_by_id("banesco-form", None)
-
-	def _is_login_page(self, site_text):
-		error_msg = "Para ingresar debe usar el usuario y clave del portal pasaporte."
-		if error_msg in site_text:
-			return True
-		else:
-			return False
-
+		return payment_form
+	
 	def perform_payment(self, payment_form, card_ci, card_type, card_holder_name, card_number, card_cvc, card_expiration_date_month, card_expiration_date_year,):
-		
 		payload = self._get_payload_from_form(payment_form)
-
 		payload['Banesco[cardHolderId]'] = card_ci
 		payload['Banesco[tipoTarjeta]'] = card_type
 		payload['Banesco[cardHolder]'] = card_holder_name
@@ -174,11 +161,15 @@ class UserApi():
 					myfile.write(response.content.decode('utf_8')) 
 				send_notification("parece que se pago:" + self.username)
 
+	def _get_payment_form(self, site_text):
+		return html.fromstring(site_text).get_element_by_id("banesco-form", None)
 
-
-		
-
-
+	def _is_login_page(self, site_text):
+		error_msg = "Para ingresar debe usar el usuario y clave del portal pasaporte."
+		if error_msg in site_text:
+			return True
+		else:
+			return False
 
 	def _get_first_row_from_table(self, table_node):
 		rows = table_node.xpath("tr")
