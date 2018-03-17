@@ -9,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 class SaimeBotTests(unittest.TestCase):
 
 	def setUp(self):
-		self.user_api = UserApi(username="blala",password="blala")
+		self.user_api = UserApi(username="blala",password="blala", secret_answer="blabala")
 
 	def test_row_data_from_table_node(self):
 		
