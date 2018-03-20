@@ -70,7 +70,7 @@ class UserApi():
 			headers = dict(referer = self.LOGIN_URL),
 			timeout = 20
 		)
-		if response.status_code == 502:
+		if response.status_code >= 500:
 			raise self.SiteIsDown()
 
 		if self._is_login_page(response.content.decode('utf_8')):
@@ -82,7 +82,7 @@ class UserApi():
 			headers = dict(referer = self.HOME_URL), 
 			timeout = 20
 		)
-		if response.status_code == 502:
+		if response.status_code >= 500:
 			raise self.SiteIsDown()
 		
 		return not self._is_login_page(response.content.decode('utf_8'))
@@ -94,7 +94,7 @@ class UserApi():
 			headers = dict(referer = self.HOME_URL),
 			timeout = 20
 		)
-		if result.status_code == 502:
+		if result.status_code >= 500:
 			raise self.SiteIsDown()
 		
 		tree = html.fromstring(result.content)
@@ -118,7 +118,7 @@ class UserApi():
 			headers = dict(referer = self.EXPRESS_URL),
 			timeout = 20
 		)
-		if response.status_code == 502:
+		if response.status_code >= 500:
 			raise self.SiteIsDown()
 		
 		tree = html.fromstring(response.content)
@@ -140,7 +140,7 @@ class UserApi():
 			headers = dict(referer = self.PAYMENT_URL),
 			timeout = 20
 		)
-		if response.status_code == 502:
+		if response.status_code >= 500:
 			raise self.SiteIsDown()
 		payment_form = self._get_payment_form(response.content)
 		if payment_form == None:
@@ -165,7 +165,7 @@ class UserApi():
 			headers = dict(referer = self.PAYMENT_URL),
 			timeout = 30
 		)
-		if response.status_code == 502:
+		if response.status_code >= 500:
 			raise self.SiteIsDown()
 
 		error_msg = 'Estimado ciudadano usted posee el máximo de pagos permitidos para este tipo de tramite en este año'
