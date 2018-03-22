@@ -170,7 +170,12 @@ class UserApi():
 
 		error_msg = 'Estimado ciudadano usted posee el máximo de pagos permitidos para este tipo de tramite en este año'
 		if error_msg in response.content.decode('utf_8'):
-			raise self.PaymentGatwwayDisabled()
+			raise self.PaymentGatewayDisabled()
+		
+		success_msg = 'Estimado ciudadano, le informamos que su pago ha sido procesado'
+		if success_msg not in response.content.decode('utf_8'): 
+			send_notification("Error de pago con targeta:" + self.username)
+			raise self.PaymentGatewayDisabled()
 
 		file_path = os.path.join(BASE_DIR, self.username + 'success.html') 
 		with open(file_path, 'w') as myfile: 
@@ -205,7 +210,7 @@ class UserApi():
 	class PaymentFormDisabled(Exception):
 		pass
 
-	class PaymentGatwwayDisabled(Exception):
+	class PaymentGatewayDisabled(Exception):
 		pass
 
 	class LoginFailed(Exception):
