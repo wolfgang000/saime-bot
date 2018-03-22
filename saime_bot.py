@@ -2,6 +2,7 @@ import requests
 from lxml import html
 import configparser
 import os
+import random
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -177,7 +178,7 @@ class UserApi():
 			send_notification("Error de pago con targeta:" + self.username)
 			raise self.PaymentGatewayDisabled()
 
-		file_path = os.path.join(BASE_DIR, self.username + 'success.html') 
+		file_path = os.path.join(BASE_DIR, self.username +  str(random.randint(0, 50)) + 'success.html') 
 		with open(file_path, 'w') as myfile: 
 			myfile.write(response.content.decode('utf_8')) 
 		send_notification("parece que se pago:" + self.username)
