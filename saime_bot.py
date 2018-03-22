@@ -330,4 +330,8 @@ def main():
     
 
 if __name__ == '__main__':
-    main()
+	try:
+		main()
+	except Exception:
+		send_notification("Error en el bot:")
+    
