@@ -316,7 +316,7 @@ def main():
 					continue
 	
 				print(datetime.datetime.now(),"Going to sleep....")
-				time.sleep(31) 
+				time.sleep(21) 
 
 		except IndexError:
 			print("No more accounts left")
