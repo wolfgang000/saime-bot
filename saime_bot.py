@@ -42,11 +42,12 @@ class UserApi():
 	PAYMENT_URL = "https://tramites.saime.gob.ve/index.php?r=pago/pago/formpago"
 	EXPRESS_URL = "https://tramites.saime.gob.ve/index.php?r=inicio/inicio/agilizacion"
 
-	def __init__(self, username, password, secret_answer):
+	def __init__(self, username, password, secret_answer, names):
 		self.session_requests = requests.session()
 		self.username = username
 		self.password = password
 		self.secret_answer = secret_answer
+		self.names = names
 
 	def is_site_up(self):
 		result = self.session_requests.get(
@@ -108,7 +109,22 @@ class UserApi():
 			'birth_date': row_data[3]
 		}
 
-	
+
+	def is_name_in_text(self, name_list, text_content):
+		for name in name_list:
+			if name in text_content:
+				return True
+		return False
+
+	def get_filter_forms(self, tree, names):
+		tr_nodes = tree.xpath("//table[@class='table']/tr")
+		tr_nodes = list(filter(lambda node: self.is_name_in_text(names, node.text_content()), tr_nodes))
+		form_nodes = []
+		for tr_node in tr_nodes: 
+			tr_node = html.fromstring(html.tostring(tr_node))
+			form_nodes += tr_node.xpath("//tr/td/form")
+		return form_nodes
+
 	
 	def get_express_passport_payment_form_links(self):
 		'''
@@ -123,7 +139,9 @@ class UserApi():
 			raise self.SiteIsDown()
 		
 		tree = html.fromstring(response.content)
-		form_nodes = tree.xpath('//form')
+#		form_nodes = tree.xpath('//form')
+		form_nodes = self.get_filter_forms(tree, self.names)
+
 		#Check if there are payment forms
 		if not form_nodes:
 			raise self.ExpressPassportPaymentFormNotFound()
@@ -239,7 +257,8 @@ def main():
 		d.append(UserApi(
 			username=user['username'],
 			password=user['password'],
-			secret_answer = user['secret_answer']
+			secret_answer = user['secret_answer'],
+			names = user['names'],
 			)
 		)
 	while True:
@@ -258,7 +277,7 @@ def main():
 
 					print(datetime.datetime.now(),"Getting express passport payment form links")
 					payment_form_links = bot.get_express_passport_payment_form_links()
-
+					print("tarmites:", len(payment_form_links))
 					for payment_form_link in payment_form_links:
 						payment_form = bot.get_express_passport_payment_form(payment_form_link)
 						bot.perform_payment(

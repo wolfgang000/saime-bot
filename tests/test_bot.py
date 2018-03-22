@@ -9,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 class SaimeBotTests(unittest.TestCase):
 
 	def setUp(self):
-		self.user_api = UserApi(username="blala",password="blala", secret_answer="blabala")
+		self.user_api = UserApi(username="blala",password="blala", secret_answer="blabala", names=["naman","namana"])
 
 	def test_row_data_from_table_node(self):
 		
@@ -58,6 +58,16 @@ class SaimeBotTests(unittest.TestCase):
 		self.assertEqual(len(payload), 4, msg=payload)
 
 
+	def test_multiple_forms(self):
+		file_path = os.path.join(BASE_DIR, 'data/express_multiple.html')
+		with open(file_path, 'r') as myfile:
+			express_html = myfile.read()
+
+		tree = html.fromstring(express_html)
+		names = ["Meglys Chiquinquira Fernandez", ]
+		nodes = self.user_api.get_filter_forms(tree,names) 
+		self.assertEqual(len(nodes),1)
+
 	def test_disabled_payment_site(self):
 		file_path = os.path.join(BASE_DIR, 'data/express_failed.html')
 		with open(file_path, 'r') as myfile:
@@ -80,7 +90,7 @@ class SaimeBotTests(unittest.TestCase):
 		self.assertEqual(self.user_api._is_login_page(site_text=test_text), False)
 		
 	
-	
+	"""
 	def test_perform_payment(self):
 		file_path = os.path.join(BASE_DIR, 'data/payment_site.html')
 		with open(file_path, 'r') as myfile:
@@ -96,7 +106,7 @@ class SaimeBotTests(unittest.TestCase):
 			card_expiration_date_month=None, 
 			card_expiration_date_year=None, 
 		)
-
+	"""
 
 
 
