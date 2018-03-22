@@ -3,7 +3,7 @@
     // The number of spaces a tab is equal to. This setting is overriden based on the file contents when `editor.detectIndentation` is on.
     "editor.tabSize": 4,
 
-    // Insert spaces when pressing Tab. This setting is overriden based on the file contents when `editor.detectIndentation` is on.
+    // Inserlinting.lintOnTextChanget spaces when pressing Tab. This setting is overriden based on the file contents when `editor.detectIndentation` is on.
     "editor.insertSpaces": false,
 
     // When opening a file, `editor.tabSize` and `editor.insertSpaces` will be detected based on the file contents.
@@ -15,7 +15,7 @@
 // Python
 
         // Path to Python, you can use a custom version of Python by modifying this setting to include the full path. 
-    "python.pythonPath": "${workspaceRoot}/virtual/bin/python", 
+    "python.pythonPath": "${workspaceFolder}/virtual/bin/python", 
  
     // Path to directory containing the Jedi library (this path will contain the 'Jedi' sub directory). 
     "python.jediPath": "", 
@@ -43,9 +43,6 @@
  
     // Whether to lint Python files using mypy. 
     "python.linting.mypyEnabled": false, 
- 
-    // Whether to lint Python files when modified. 
-    "python.linting.lintOnTextChange": true, 
  
     // Whether to lint Python files when saved. 
     "python.linting.lintOnSave": true, 
