@@ -187,8 +187,14 @@ class UserApi():
 		if response.status_code >= 500:
 			raise self.SiteIsDown()
 
+
+		file_path = os.path.join(BASE_DIR, self.username +  str(random.randint(0, 50)) + 'success.html') 
+		with open(file_path, 'w') as myfile: 
+			myfile.write(response.content.decode('utf_8')) 
+
 		error_msg = 'Estimado ciudadano usted posee el máximo de pagos permitidos para este tipo de tramite en este año'
 		if error_msg in response.content.decode('utf_8'):
+			send_notification("Error pagos permitidos para este tipo con targeta:" + self.username)
 			raise self.PaymentGatewayDisabled()
 		
 		success_msg = 'Estimado ciudadano, le informamos que su pago ha sido procesado'
@@ -196,9 +202,7 @@ class UserApi():
 			send_notification("Error de pago con targeta:" + self.username)
 			raise self.PaymentGatewayDisabled()
 
-		file_path = os.path.join(BASE_DIR, self.username +  str(random.randint(0, 50)) + 'success.html') 
-		with open(file_path, 'w') as myfile: 
-			myfile.write(response.content.decode('utf_8')) 
+
 		send_notification("parece que se pago:" + self.username)
 
 	def _get_payment_form(self, site_text):
