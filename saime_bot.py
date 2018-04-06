@@ -298,8 +298,10 @@ def main():
 					break
 
 				except UserApi.PaymentGatewayDisabled:
-					print(datetime.datetime.now(),"Payment Gateway disabled....")	
-
+					print(datetime.datetime.now(),"Payment Gateway disabled....")
+					time.sleep(10)
+					continue
+					
 				except UserApi.SiteIsDown:
 					print(datetime.datetime.now(),"Site down....")
 				except UserApi.PaymentFormDisabled:
