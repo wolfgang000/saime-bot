@@ -4,6 +4,12 @@ import configparser
 import os
 import random
 
+import time
+import datetime
+from collections import deque
+import json
+
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -186,9 +192,8 @@ class UserApi():
 		)
 		if response.status_code >= 500:
 			raise self.SiteIsDown()
-
-
-		file_path = os.path.join(BASE_DIR, self.username +  str(random.randint(0, 50)) + 'success.html') 
+			
+		file_path = os.path.join(BASE_DIR, '{}{}success.html'.format(self.username,datetime.datetime.now())) 
 		with open(file_path, 'w') as myfile: 
 			myfile.write(response.content.decode('utf_8')) 
 
@@ -241,11 +246,6 @@ class UserApi():
 	
 	class ExpressPassportPaymentFormNotFound(Exception):
 		pass
-
-import time
-import datetime
-from collections import deque
-import json
 
 
 def main():
@@ -338,6 +338,6 @@ def main():
 if __name__ == '__main__':
 	try:
 		main()
-	except Exception:
-		send_notification("Error en el bot:")
+	except Exception as ex:
+		send_notification("Error en el bot:" + str(ex))
     
