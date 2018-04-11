@@ -82,11 +82,10 @@ class UserApi():
 		
 
 		payload = self._get_payload_from_form(login_form)
-		payload = {
-			"LoginForm[username]": self.username, 
-			"LoginForm[password]": self.password,
-			"yt0": "Ingresar",
-		}
+		payload["LoginForm[username]"] = self.username, 
+		payload["LoginForm[password]"] = self.password,
+		payload["yt0"] = "Ingresar"
+		
 		response = self.session_requests.post(
 			self.LOGIN_URL, 
 			data = payload, 
