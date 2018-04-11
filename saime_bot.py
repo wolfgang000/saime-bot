@@ -67,10 +67,25 @@ class UserApi():
 			return False
 
 	def login(self):
+
+		response = self.session_requests.get(
+			self.LOGIN_URL, 
+			headers = dict(referer = self.LOGIN_URL),
+			timeout = 30
+		)
+		if response.status_code >= 500:
+			raise self.SiteIsDown()
+		
+		login_form = html.fromstring(response.content).get_element_by_id("login-form", None)
+		if login_form is None:
+			raise self.SiteIsDown()
+		
+
+		payload = self._get_payload_from_form(login_form)
 		payload = {
 			"LoginForm[username]": self.username, 
-			"LoginForm[password]": self.password, 
-			"g-recaptcha-response": ""
+			"LoginForm[password]": self.password,
+			"yt0": "Ingresar",
 		}
 		response = self.session_requests.post(
 			self.LOGIN_URL, 
